@@ -1,0 +1,368 @@
+// ---------------- CONFIG ----------------
+const ALLOWED_EMAIL = "hiiraju58@gmail.com";
+const ALLOWED_PASS = "123";
+const SALES_PASS = "admin123";
+//////
+function toggleMenu() {
+  const menu = document.getElementById("dropdownMenu");
+  menu.classList.toggle("hidden");
+}
+function showAboutSection() {
+  document.getElementById("mainContent").style.display = "none";
+  document.getElementById("about").classList.remove("hidden");
+  window.scrollTo(0, 0); // Scroll to top
+}
+function toggleSideMenu() {
+  const menu = document.getElementById("sideMenu");
+  menu.classList.toggle("show");
+}
+
+function openAbout() {
+  alert("About Home Mart: We provide quality products at best prices!");
+}
+
+function openServices() {
+  alert("Our Services: Home delivery, bulk orders, and more!");
+}
+
+function openContact() {
+  alert("Contact us at: support@homemart.com / ‪+91-9876543210‬");
+}
+
+// ---------------- PRODUCTS ----------------
+const PRODUCTS = [
+  { id: "rice", name:"Basmati Rice", price:80, category:"Kirana", img:`https://picsum.photos/seed/rice/200` },
+  { id: "toor", name:"Toor Dal", price:100, category:"Kirana", img:`https://picsum.photos/seed/dal/200` },
+  { id: "sugar", name:"Sugar", price:45, category:"Kirana", img:`https://picsum.photos/seed/sugar/200` },
+  {id: "rice", name:"sonamasuri Rice", price:90, category:"Kirana", img:'https://rukminim2.flixcart.com/image/480/640/kjom6q80-0/rice/j/z/u/white-premium-sona-masoori-rice-bag-daawat-original-imafz6xh9paenu8g.jpeg?q=90'},
+  {  id: "Buttremilk", name:"bttermilk(small)", price:9, category:"Dairy",img:' https://media.istockphoto.com/id/1226425133/photo/various-kinds-of-dairy-products-on-a-dark-bluish-background.jpg?s=2048x2048&w=is&k=20&c=UUtPzBY_8vA8465gZE2J3eVgUpw9r-SYJu4B3jsIjqY='},
+  {id: "curd", name:"curd(1liter)", price:80, category:"Dairy", img:'https://media.istockphoto.com/id/1407501931/photo/tasty-creamy-dill-sauce-in-bowl-on-wooden-table.jpg?s=2048x2048&w=is&k=20&c=I_AkoHgigIrMguQGk0z6trS5ShF2budO0g4M8P3HB4s='},
+  {id: "chess", name:"chess(50g)", price:40, category:"Dairy", img:'https://media.istockphoto.com/id/1053866362/photo/assorted-dairy-product.jpg?s=2048x2048&w=is&k=20&c=JmIW8kN0f5Mv6X6mntoos9d9OmH6Cg3lDP4d98OJVqI='},
+  {id: "chess", name:"chess(100g)", price:80, category:"Dairy", img:'https://media.istockphoto.com/id/1053866362/photo/assorted-dairy-product.jpg?s=2048x2048&w=is&k=20&c=JmIW8kN0f5Mv6X6mntoos9d9OmH6Cg3lDP4d98OJVqI='},
+  { id: "atta", name:"Wheat Flour (1kg)", price:55, category:"Kirana", img:`https://picsum.photos/seed/atta/200` },
+  { id: "oil",  name:"Cooking Oil (1L)", price:180, category:"Kirana", img:`https://picsum.photos/seed/oil/200` },
+  { id: "milk", name:"Milk (1L)", price:50, category:"Dairy", img:`https://picsum.photos/seed/milk/200` },
+  { id: "curd", name:"Curd (500g)", price:40, category:"Dairy", img:`https://picsum.photos/seed/curd/200` },
+  { id: "butter", name:"Butter (200g)", price:120, category:"Dairy", img:`https://picsum.photos/seed/butter/200` },
+  { id: "paneer", name:"Paneer (200g)", price:90, category:"Dairy", img:`https://picsum.photos/seed/paneer/200` },
+  { id: "lays", name:"Lays (Pack)", price:20, category:"Snacks", img:`https://picsum.photos/seed/lays/200` },
+  { id: "kurkure", name:"Kurkure (Pack)", price:15, category:"Snacks", img:`https://picsum.photos/seed/kurkure/200` },
+  { id: "hide", name:"Hide & Seek", price:25, category:"Snacks", img:`https://picsum.photos/seed/biscuits/200` },
+  { id: "choc", name:"Chocolate Bar", price:60, category:"Snacks", img:`https://picsum.photos/seed/chocolate/200` },
+  { id: "vim", name:"Vim Bar", price:10, category:"Cleaning", img:`https://picsum.photos/seed/vim/200` },
+  { id: "harpic", name:"Harpic", price:50, category:"Cleaning", img:`https://picsum.photos/seed/harpic/200` },
+  { id: "phenyl", name:"Phenyl (1L)", price:40, category:"Cleaning", img:`https://picsum.photos/seed/phenyl/200` },
+  { id: "coke", name:"Coca Cola (500ml)", price:40, category:"Soft Drinks", img:`https://picsum.photos/seed/coke/200` },
+  { id: "frooti", name:"Frooti (200ml)", price:25, category:"Soft Drinks", img:`https://picsum.photos/seed/frooti/200` },
+  { id: "sprite", name:"Sprite (500ml)", price:40, category:"Soft Drinks", img:`https://picsum.photos/seed/sprite/200` },
+  { id: "apple", name:"Apple (500g)", price:80, category:"Fruits", img:`https://picsum.photos/seed/apple/200` },
+  { id: "banana", name:"Banana (dozen)", price:50, category:"Fruits", img:`https://picsum.photos/seed/banana/200` },
+  { id: "orange", name:"Orange (1kg)", price:90, category:"Fruits", img:`https://picsum.photos/seed/orange/200` }
+];
+
+// ---------------- STATE ----------------
+let cart = [];
+let total = 0;
+const categorySection = document.getElementById("categorySection");
+
+// ---------------- UTILITIES ----------------
+function formatRupee(n) { return "₹" + n; }
+function findCartItem(id) { return cart.find(c => c.id === id); }
+function saveSales(sale) {
+  const s = JSON.parse(localStorage.getItem("sales") || "[]");
+  s.push(sale);
+  localStorage.setItem("sales", JSON.stringify(s));
+}
+
+// ---------------- RENDER PRODUCTS ----------------
+function renderProducts() {
+  const categories = {};
+  PRODUCTS.forEach(p => {
+    if (!categories[p.category]) categories[p.category] = [];
+    categories[p.category].push(p);
+  });
+
+  categorySection.innerHTML = "";
+  for (const cat in categories) {
+    const sec = document.createElement("section");
+    sec.className = "category";
+    sec.setAttribute("data-name", cat);
+    sec.innerHTML = `<h2>${cat}</h2>`;
+    categories[cat].forEach(p => {
+      const item = document.createElement("div");
+      item.className = "item";
+      item.dataset.id = p.id;
+      item.innerHTML = `
+        <img src="${p.img}" alt="${p.name}" loading="lazy"/>
+        <div class="meta">
+          <div class="name">${p.name}</div>
+          <div class="price">${formatRupee(p.price)}</div>
+        </div>
+        <div><button class="add">Add</button></div>
+      `;
+      item.querySelector(".add").addEventListener("click", (e) => {
+        e.stopPropagation();
+        addToCart(p.id);
+      });
+      sec.appendChild(item);
+    });
+    categorySection.appendChild(sec);
+  }
+}
+
+// ---------------- CART OPERATIONS ----------------
+function addToCart(productId) {
+  const p = PRODUCTS.find(x => x.id === productId);
+  if (!p) return;
+  const existing = findCartItem(productId);
+  if (existing) existing.qty += 1;
+  else cart.push({ ...p, qty: 1 });
+  total += p.price;
+  updateCartUI();
+  updateCartCount();
+}
+function decreaseQty(productId) {
+  const it = findCartItem(productId);
+  if (!it) return;
+  it.qty -= 1;
+  total -= it.price;
+  if (it.qty <= 0) cart = cart.filter(c => c.id !== productId);
+  updateCartUI();
+  updateCartCount();
+}
+function increaseQty(productId) {
+  const it = findCartItem(productId);
+  if (!it) return;
+  it.qty += 1;
+  total += it.price;
+  updateCartUI();
+  updateCartCount();
+}
+function removeItem(productId) {
+  const it = findCartItem(productId);
+  if (!it) return;
+  total -= it.price * it.qty;
+  cart = cart.filter(c => c.id !== productId);
+  updateCartUI();
+  updateCartCount();
+}
+function clearCart() {
+  cart = [];
+  total = 0;
+  updateCartUI();
+  updateCartCount();
+}
+
+// ---------------- CART UI ----------------
+function updateCartUI() {
+  const container = document.getElementById("cartItems");
+  container.innerHTML = "";
+  if (cart.length === 0) {
+    container.innerHTML = "<p>Cart is empty.</p>";
+  } else {
+    cart.forEach(it => {
+      const row = document.createElement("div");
+      row.className = "cart-row";
+      row.innerHTML = `
+        <div class="cart-left">
+          <img src="${it.img}" alt="${it.name}">
+          <div>
+            <div style="font-weight:700">${it.name}</div>
+            <div style="font-size:13px;color:#666">${it.category} • ${formatRupee(it.price)} each</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px">
+          <div class="qty-controls">
+            <button data-action="dec" data-id="${it.id}">-</button>
+            <span style="padding:6px 8px;background:#fff;border-radius:6px;">x ${it.qty}</span>
+            <button data-action="inc" data-id="${it.id}">+</button>
+          </div>
+          <div style="min-width:110px;text-align:right;font-weight:700">${formatRupee(it.price * it.qty)}</div>
+          <button class="remove-btn" data-action="remove" data-id="${it.id}">Remove</button>
+        </div>
+      `;
+      container.appendChild(row);
+    });
+    container.querySelectorAll("button[data-action]").forEach(btn => {
+      const id = btn.dataset.id;
+      const action = btn.dataset.action;
+      btn.addEventListener("click", () => {
+        if (action === "dec") decreaseQty(id);
+        if (action === "inc") increaseQty(id);
+        if (action === "remove") removeItem(id);
+      });
+    });
+  }
+  document.getElementById("cartTotal").innerText = "Total: " + formatRupee(total);
+}
+function updateCartCount() {
+  const count = cart.reduce((s, i) => s + i.qty, 0);
+  document.getElementById("cartCount").innerText = count;
+}
+
+// ---------------- NAVIGATION ----------------
+function showCategory(name) {
+  document.querySelectorAll(".category").forEach(cat => {
+    cat.style.display = (cat.getAttribute("data-name") === name) ? "block" : "none";
+  });
+  showSection("categories");
+}
+function showAllCategories() {
+  document.querySelectorAll(".category").forEach(cat => cat.style.display = "block");
+  showSection("categories");
+}
+function showSection(name) {
+  document.getElementById("categorySection").style.display = (name === "categories") ? "grid" : "none";
+  document.getElementById("cartSection").style.display = (name === "cart") ? "block" : "none";
+  document.getElementById("salesSection").style.display = (name === "sales") ? "block" : "none";
+}
+function toggleCart() {
+  showSection("cart");
+  updateCartUI();
+}
+
+// ---------------- BILL PRINT ----------------
+function printBill() {
+  if (cart.length === 0) {
+    alert("Cart is empty!");
+    return;
+  }
+
+  const customerNameInput = document.getElementById("customerName");
+  const customerName = customerNameInput ? customerNameInput.value.trim() : null;
+  const customer = customerName || localStorage.getItem("userLogin") || "Guest";
+
+  const categories = {};
+  cart.forEach(i => {
+    if (!categories[i.category]) categories[i.category] = [];
+    categories[i.category].push(`${i.name} x${i.qty} = ${formatRupee(i.price * i.qty)}`);
+  });
+
+  let billText = `Home Mart\nDate: ${new Date().toLocaleString()}\nCustomer: ${customer}\n\n`;
+  for (const cat in categories) {
+    billText += `${cat}:\n  ${categories[cat].join("\n  ")}\n\n`;
+  }
+  billText += `Total: ${formatRupee(total)}\n\nThank you for shopping!`;
+
+  const win = window.open("", "PRINT", "width=600,height=700");
+  win.document.write(`<pre style="font-size:15px;font-family:Arial,Helvetica,sans-serif;">${billText}</pre>`);
+  win.document.close();
+  win.print();
+
+  saveSales({
+    date: new Date().toLocaleString(),
+    customer: customer,
+    items: cart.map(i => ({ id: i.id, name: i.name, price: i.price, qty: i.qty })),
+    total
+  });
+
+  clearCart();
+  showAllCategories();
+}
+
+// ---------------- SALES ----------------
+function openSales() {
+  showSection("sales");
+  document.getElementById("salesOutput").textContent = "";
+  document.getElementById("salesPass").value = "";
+}
+function viewSales() {
+  const pass = document.getElementById("salesPass").value;
+  if (pass !== SALES_PASS) {
+    alert("Incorrect password!");
+    return;
+  }
+  const sales = JSON.parse(localStorage.getItem("sales") || "[]");
+  if (sales.length === 0) {
+    document.getElementById("salesOutput").textContent = "No sales yet.";
+    return;
+  }
+  let out = "";
+  sales.forEach(s => {
+    out += `Date: ${s.date} | Customer: ${s.customer || "Guest"} | Total: ${formatRupee(s.total)}\nItems:\n`;
+    s.items.forEach(it => out += `  - ${it.name} x${it.qty} = ${formatRupee(it.price * it.qty)}\n`);
+    out += `\n`;
+  });
+  document.getElementById("salesOutput").textContent = out;
+}
+function exportSalesCSV() {
+  const pass = document.getElementById("salesPass").value;
+  if (pass !== SALES_PASS) {
+    alert("Incorrect password!");
+    return;
+  }
+  const sales = JSON.parse(localStorage.getItem("sales") || "[]");
+  if (sales.length === 0) {
+    alert("No sales to export");
+    return;
+  }
+  const rows = [["Date", "Customer", "Total", "Items"]];
+  sales.forEach(s => {
+    const itemsText = s.items.map(i => `${i.name} x${i.qty}`).join(" | ");
+    rows.push([s.date, s.customer || "Guest", s.total, itemsText]);
+  });
+
+  const csv = rows.map(r => r.map(c => `"${String(c).replace(/"/g, '""')}"`).join(",")).join("\n");
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `home_mart_sales_${new Date().toISOString().slice(0, 10)}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+function closeSales() {
+  showAllCategories();
+}
+
+// ---------------- LOGIN / LOGOUT ----------------
+document.getElementById("loginBtn").addEventListener("click", function () {
+  const email = document.getElementById("loginEmail").value.trim();
+  const pass = document.getElementById("loginPass").value;
+  const err = document.getElementById("loginError");
+
+  if (email === ALLOWED_EMAIL && pass === ALLOWED_PASS) {
+    localStorage.setItem("userLogin", email);
+    document.getElementById("loginView").classList.add("hidden");
+    document.getElementById("appView").classList.remove("hidden");
+    initializeApp();
+  } else {
+    err.style.display = "block";
+    err.textContent = "Invalid email or password!";
+  }
+});
+function logout() {
+  localStorage.removeItem("userLogin");
+  clearCart();
+  document.getElementById("loginView").classList.remove("hidden");
+  document.getElementById("appView").classList.add("hidden");
+  document.getElementById("searchInput").value = "";
+}
+
+// ---------------- INIT ----------------
+function initializeApp() {
+  renderProducts();
+  showAllCategories();
+  updateCartUI();
+  updateCartCount();
+}
+(function () {
+  const logged = localStorage.getItem("userLogin");
+  if (logged) {
+    document.getElementById("loginView").classList.add("hidden");
+    document.getElementById("appView").classList.remove("hidden");
+    initializeApp();
+  } else {
+    document.getElementById("loginView").classList.remove("hidden");
+    document.getElementById("appView").classList.add("hidden");
+  }
+})();
+
+// ---------------- SEARCH ----------------
+document.getElementById("searchInput").addEventListener("input", (e) => {
+  const q = e.target.value.trim().toLowerCase();
+  document.querySelectorAll(".item").forEach(it => {
+    const txt = it.querySelector(".meta .name").textContent.toLowerCase();
+    it.style.display = txt.includes(q) ? "flex" : "none";
+  });
+});

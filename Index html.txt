@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Home Mart</title>
+  <link rel="stylesheet" href="./animi1.css" />
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="loginView" class="center-wrap">
+  <div class="auth-box">
+    <h2>Home Mart — Login</h2>
+    <input id="loginEmail" placeholder="Email" type="email" />
+    <input id="loginPass" placeholder="Password" type="password" />
+    <button id="loginBtn">Login</button>
+    <p id="loginError" class="error-msg" style="display:none"></p>
+    <p style="margin-top:6px;font-size:13px;color:#666">
+  </div>
+</div>
+
+<!-- APP -->
+<div id="appView" class="hidden">
+
+  <header class="topbar">
+    <h1>Home Mart</h1>
+    <div class="top-search">
+      <input id="searchInput" placeholder="Search products..." />
+    </div>
+    <div class="top-actions">
+        
+      <button title="Cart" onclick="toggleCart()">🛒 <span id="cartCount" class="badge">0</span></button>
+      <button title="Sales" onclick="openSales()">📊 Sales</button>
+      <button title="Logout" onclick="logout()">🔐 Logout</button>
+    </div>
+  </header>
+
+
+  <nav class="cat-nav" id="catNav">
+    <!--hambergermanu-->
+    <div class="menu-wrapper">
+        <button class="menu-icon" onclick="toggleMenu()">
+          <div class="bar"></div>
+          <div class="bar"></div>
+          <div class="bar"></div>
+        </button>
+        <div id="dropdownMenu" class="dropdown hidden">
+          <a href="#About">About</a>
+          <a href="#services">Services</a>
+          <a href="#contact">Contact</a>
+        </div>
+      </div>
+   <!--<button title="Menu" onclick="togglesidemenu()">☰</button>-->
+    <button onclick="showCategory('Kirana')">Kirana</button>
+    <button onclick="showCategory('Dairy')">Dairy</button>
+    <button onclick="showCategory('Snacks')">Snacks</button>
+    <button onclick="showCategory('Cleaning')">Cleaning</button>
+    <button onclick="showCategory('Soft Drinks')">Soft Drinks</button>
+    <button onclick="showCategory('Fruits')">Fruits</button>
+    <button onclick="showAllCategories()">Home</button>
+    <button onclick="toggleCart()">Bill</button>
+  </nav>
+
+  <main>
+    <section id="categorySection" class="categories"></section>
+
+    <section id="cartSection">
+      <h2>Your Cart</h2>
+      <div id="cartItems"></div>
+      <h3 id="cartTotal">Total: ₹0</h3>
+     
+        <button onclick="printBill()">🖨️ Print Bill</button>
+       <label for="customerName">Customer Name:</label>
+<input type="text" id="customerName" placeholder="Enter customer name"/>
+
+        <button onclick="clearCart()">Clear Cart</button>
+        <button onclick="showAllCategories()">🏠 Home</button>
+      </div>
+    </section>
+
+    <section id="salesSection">
+      <h2>Sales Data (Protected)</h2>
+      <input id="salesPass" type="password" placeholder="Enter password" />
+      <div style="display:flex;gap:8px;margin:8px 0;">
+        <button onclick="viewSales()">View Sales</button>
+        <button onclick="exportSalesCSV()">Export CSV</button>
+        <button onclick="closeSales()">Close</button>
+      </div>
+      <pre id="salesOutput" class="sales-out"></pre>
+    </section>
+    
+  </main>
+</div>
+
+<script src="./animi.js"></script>
+</body>
+</html>
